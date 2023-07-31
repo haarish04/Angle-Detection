@@ -1,6 +1,4 @@
-img = cv2.imread("image.jpg")
-
-
+img = cv2.imread("testimage.jpg")
 cv2_imshow(img)
 
 # Convert image to grayscale
@@ -21,33 +19,15 @@ for i, c in enumerate(contours):
   if area < 3700 or 100000 < area:
     continue
 
-  # cv.minAreaRect returns:
-  # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)
-  rect = cv2.minAreaRect(c)
-  box = cv2.boxPoints(rect)
-  box = np.int0(box)
+  # Draw each contour only for visualisation purposes
+  cv2.drawContours(img, contours, i, (0, 0, 255), 2)
 
-  # Retrieve the key parameters of the rotated bounding box
-  center = (int(rect[0][0]),int(rect[0][1]))
-  width = int(rect[1][0])
-  height = int(rect[1][1])
-  angle = int(rect[2])
-
-
-  if width < height:
-    angle = 90 - angle
-  else:
-    angle = -angle
-  if angle <0:
-    angle=-angle
-    angle=180-angle
-  label = "Angle: " + str(angle) + " deg"
-  textbox = cv2.rectangle(img, (center[0]-35, center[1]-25),
-    (center[0] + 100, center[1] + 10), (255,255,255), -1)
-  cv2.putText(img, label, (center[0]-50, center[1]),
-    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,0), 1, cv2.LINE_AA)
-  cv2.drawContours(img,[box],0,(0,0,255),2)
+  # Find the orientation of each shape
+  getOrientation(c, img)
 
 cv2_imshow(img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+# Save the output image to the current directory
+cv2.imwrite("output_img.jpg", img)
